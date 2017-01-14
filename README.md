@@ -1,4 +1,11 @@
-# volatility-dapp
+# Volatility DApp
+
+Simple React based DApp to demonstrate pushing external rates to a contract and calculating the volatility client side.
+
+The project is made of 2 modules:
+
+- [`ui`](ui) - the DApp
+- [`contract`](contract) - the Ethereum contract
 
 # Setup
 
@@ -31,35 +38,24 @@ npm install -g ethereumjs-testrpc
 
 Start testrpc and set low gasPrice:
 ```shell
-testrpc --g 1
-```
-
-Configure address:
-```shell
-Copy default account and copy to ../ui-react/src/apps.js
+testrpc -g 1 -m volatility --account='0xafb293409a8c87be6ca3ca2ff1fca89af95e5dcf0bcb15125786b43a080de122,0xe853c56864a2ebe4576a807d26fdc4a0ada51919'
 ```
 
 Deploy contract:
 ```shell
-cd ethereum-backend
+cd contract
 truffle compile
 truffle migrate
-truffle console
 ```
 
-Copy address to `../ui-react/src/apps.js`:
-```
-> Volatility.deployed().contract.address
-```
-
-Copy the ABI to `../ui-react/src/apps.js`:
-```
-> JSON.stringify(Volatility.deployed().abi)
+Configure the app:
+```shell
+truffle exec info.js > ../ui/src/config.js
 ```
 
 Build app and run:
 ```shell
-cd ui-react && npm install && npm start
+cd ui && npm install && npm start
 ```
 
 View the app:
