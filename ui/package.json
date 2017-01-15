@@ -11,6 +11,7 @@
     "react": "^15.4.1",
     "react-bootstrap": "^0.30.7",
     "react-dom": "^15.4.1",
+    "react-highcharts": "^11.5.0",
     "web3": "^0.17.0-beta"
   },
   "scripts": {

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactHighcharts from 'react-highcharts'
 // import { Navbar, Jumbotron, Button } from 'react-bootstrap';
 
 import service from './service'
@@ -43,12 +44,22 @@ export default class App extends Component {
             now += 1;
         });
 
+        var config = {
+            xAxis: {
+                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            },
+            series: [{
+                data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 295.6, 454.4]
+            }]
+        };
+
         return (
             <div className="App">
                 <div className="App-header">
                     <img src={logo} className="App-logo" alt="logo" />
-                    <h2>Welcome to React</h2>
+                    <h2>Volatility DApp</h2>
                 </div>
+                <ReactHighcharts config = {config}></ReactHighcharts>
                 <div>
                     <RateTable rows={rows} />
                 </div>
