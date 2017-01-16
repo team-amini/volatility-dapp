@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import ReactHighcharts from 'react-highcharts'
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table'
-
-// import { Navbar, Jumbotron, Button } from 'react-bootstrap';
+import { Tabs, Tab } from 'react-bootstrap';
 
 import service from './service'
 
@@ -63,8 +62,8 @@ export default class App extends Component {
             }
         };
         
-        function priceFormatter(cell, row){
-            return '<i class="glyphicon glyphicon-usd"></i> ' + cell;
+        function rateFormatter(cell, row){
+            return cell.toFixed(5);
         }
 
         return (
@@ -73,15 +72,23 @@ export default class App extends Component {
                     <img src={logo} className="App-logo" alt="logo" />
                     <h2>Volatility DApp</h2>
                 </div>
-                <ReactHighcharts config = {config}></ReactHighcharts>
-                <BootstrapTable data={this.state.rates} striped={true} hover={true} pagination search>
-                    <TableHeaderColumn dataField="time" isKey={true} dataAlign="left" dataSort={true}>Time</TableHeaderColumn>
-                    <TableHeaderColumn dataField="instrument" dataSort={true}>Instrument</TableHeaderColumn>
-                    <TableHeaderColumn dataField="rate" dataFormat={priceFormatter}>Rate</TableHeaderColumn>
-                </BootstrapTable>                
-                <div>
-                    <Volatility name={service.getVolatility()} balance={service.getBalance()} />
-                </div>                
+                <div className="App-body">
+                    <Tabs defaultActiveKey={1} id="uncontrolled-tab-example">
+                        <Tab eventKey={1} title="Chart">
+                            <ReactHighcharts config = {config}></ReactHighcharts>
+                        </Tab>
+                        <Tab eventKey={2} title="Table">
+                            <BootstrapTable data={this.state.rates} striped={true} hover={true} pagination search>
+                                <TableHeaderColumn dataField="time" isKey={true} dataAlign="left" dataSort={true}>Time</TableHeaderColumn>
+                                <TableHeaderColumn dataField="instrument" dataSort={true}>Instrument</TableHeaderColumn>
+                                <TableHeaderColumn dataField="rate" dataFormat={rateFormatter}>Rate</TableHeaderColumn>
+                            </BootstrapTable>                    
+                        </Tab>
+                    </Tabs>           
+                    <div>
+                        <Volatility name={service.getVolatility()} balance={service.getBalance()} />
+                    </div> 
+                </div>               
             </div>
         );
     }
