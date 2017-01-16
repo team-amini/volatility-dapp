@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import ReactHighcharts from 'react-highcharts'
+import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table'
+
 // import { Navbar, Jumbotron, Button } from 'react-bootstrap';
 
 import service from './service'
 
 import logo from './logo.svg';
 import './App.css';
-
-var now = Date.now();
 
 export default class App extends Component {
 
@@ -38,20 +38,34 @@ export default class App extends Component {
     }
 
     render() {
-        var rows = [];
-        this.state.rates.forEach((rate) => {
-            rows.push(<RateRow ts={now} instrument="EUR/USD" rate={service.formatRate(rate)} key={now}/>);
-            now += 1;
-        });
-
         var config = {
-            xAxis: {
-                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            title: {
+                text: null
             },
+            colors: [
+                '#61dafb'
+            ],
+            xAxis:  {
+                type: 'datetime'
+            },
+            yAxis: {
+                title: {
+                    text: 'Exchange Rate'
+                }
+            },            
             series: [{
-                data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 295.6, 454.4]
-            }]
+                data: this.state.rates.map(row => [row.time, row.rate]),
+                type: 'area',
+                name: 'EUR/USD'
+            }],
+            credits: {
+                enabled: false
+            }
         };
+        
+        function priceFormatter(cell, row){
+            return '<i class="glyphicon glyphicon-usd"></i> ' + cell;
+        }
 
         return (
             <div className="App">
@@ -60,42 +74,15 @@ export default class App extends Component {
                     <h2>Volatility DApp</h2>
                 </div>
                 <ReactHighcharts config = {config}></ReactHighcharts>
+                <BootstrapTable data={this.state.rates} striped={true} hover={true} pagination search>
+                    <TableHeaderColumn dataField="time" isKey={true} dataAlign="left" dataSort={true}>Time</TableHeaderColumn>
+                    <TableHeaderColumn dataField="instrument" dataSort={true}>Instrument</TableHeaderColumn>
+                    <TableHeaderColumn dataField="rate" dataFormat={priceFormatter}>Rate</TableHeaderColumn>
+                </BootstrapTable>                
                 <div>
-                    <RateTable rows={rows} />
-                </div>
-                <div>
-                    <Volatility name={service.getVolatility()} />
-                </div>
+                    <Volatility name={service.getVolatility()} balance={service.getBalance()} />
+                </div>                
             </div>
-        );
-    }
-}
-
-class RateTable extends Component {
-    render() {
-        return (
-            <table>
-            <thead>
-                <tr>
-                    <th>Time</th>
-                    <th>Instrument</th>
-                    <th>Rate</th>
-                </tr>
-            </thead>
-            <tbody>{this.props.rows}</tbody>
-          </table>
-        )
-    }
-}
-
-class RateRow extends Component {
-    render() {
-        return (
-            <tr>
-                <td>{this.props.ts}</td>
-                <td>{this.props.instrument}</td>
-                <td>{this.props.rate}</td>
-            </tr>
         );
     }
 }
@@ -103,7 +90,10 @@ class RateRow extends Component {
 class Volatility extends Component {
     render() {
         return (
-            <p>Volatility is {this.props.name}%</p>
+            <div>
+                <p>Volatility is {this.props.name}%</p>
+                <p>Balance is {this.props.balance} wei</p>
+            </div>
         )
     }
 }
