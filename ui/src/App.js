@@ -1,12 +1,17 @@
 import React, { Component } from 'react';
 import ReactHighcharts from 'react-highcharts'
+import HighchartsMore from 'highcharts/highcharts-more'
+import HighchartsSolidGauge from 'highcharts/modules/solid-gauge'
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table'
-import { Tabs, Tab } from 'react-bootstrap';
+import { Col, Tabs, Tab } from 'react-bootstrap';
 
 import service from './service'
 
 import logo from './logo.svg';
 import './App.css';
+
+HighchartsMore(ReactHighcharts.Highcharts);
+HighchartsSolidGauge(ReactHighcharts.Highcharts)
 
 export default class App extends Component {
 
@@ -37,6 +42,9 @@ export default class App extends Component {
     }
 
     render() {
+        var volatility = service.getVolatility();
+        console.log(volatility);
+
         var config = {
             title: {
                 text: null
@@ -61,6 +69,57 @@ export default class App extends Component {
                 enabled: false
             }
         };
+
+        var gauge = {
+            chart: {
+                type: 'solidgauge',
+                width: 300
+            },
+            title: null,
+
+            pane: {
+                startAngle: -90,
+                endAngle: 90,
+                background: {
+                    backgroundColor: '#EEE',
+                    innerRadius: '60%',
+                    outerRadius: '100%',
+                    shape: 'arc'
+                }
+            },            
+            yAxis: {
+                stops: [
+                    [10.0, '#55BF3B'], // green
+                    [20.0, '#DDDF0D'], // yellow
+                    [30.0, '#DF5353'] // red
+                ],
+                lineWidth: 0,
+                minorTickInterval: null,
+                tickAmount: 2,
+                title: {
+                    text: 'Volatility',
+                    y: 20
+                },
+                min: 0,
+                max: 100               
+            },
+            plotOptions: {
+                solidgauge: {
+                    dataLabels: {
+                        y: 5,
+                        borderWidth: 0,
+                        useHTML: true
+                    }
+                }
+            },                  
+            series: [{
+                name: 'Volatility',
+                data: [volatility],
+                tooltip: {
+                    valueSuffix: ' %'
+                }
+            }]            
+        }
         
         function rateFormatter(cell, row){
             return cell.toFixed(5);
@@ -75,7 +134,12 @@ export default class App extends Component {
                 <div className="App-body">
                     <Tabs defaultActiveKey={1} id="uncontrolled-tab-example">
                         <Tab eventKey={1} title="Chart">
-                            <ReactHighcharts config = {config}></ReactHighcharts>
+                            <Col xs={12} md={8}>
+                                <ReactHighcharts config={config}></ReactHighcharts>
+                            </Col>
+                            <Col xs={6} md={4}>
+                                <ReactHighcharts config={gauge}></ReactHighcharts>
+                            </Col>
                         </Tab>
                         <Tab eventKey={2} title="Table">
                             <BootstrapTable data={this.state.rates} striped={true} hover={true} pagination search>
@@ -86,7 +150,7 @@ export default class App extends Component {
                         </Tab>
                     </Tabs>           
                     <div>
-                        <Volatility name={service.getVolatility()} balance={service.getBalance()} />
+                        <Volatility name={volatility} balance={service.getBalance()} />
                     </div> 
                 </div>               
             </div>
