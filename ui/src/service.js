@@ -44,12 +44,24 @@ function getVolatility() {
 }
 
 function tick() {
-    var rate = generateRate();
-    sendRate(rate);
+    // var rate = generateRate();
+    // console.log(rate);
+    // sendRate(rate);
 
-    if (listener) {
-        listener(getRates());
-    }
+    // if (listener) {
+    //     listener(getRates());
+    // }
+
+    fetch('https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.xchange%20where%20pair%20in%20(%22EURUSD%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=')
+        .then((response) => response.json())
+        .then((json) => {
+        const rate = Math.trunc(Number.parseFloat(json.query.results.rate.Rate) * 10000);
+            console.log(rate);
+              sendRate(rate);
+                if (listener) {
+                    listener(getRates());
+                }
+        });
 }
 
 function generateRate() {
