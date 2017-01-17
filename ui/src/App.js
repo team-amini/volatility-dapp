@@ -6,6 +6,7 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table'
 import { Col, Tabs, Tab } from 'react-bootstrap';
 
 import service from './service'
+import rates from './rates'
 
 import logo from './logo.svg';
 import './App.css';
@@ -29,16 +30,15 @@ export default class App extends Component {
     }
 
     componentDidMount() {
-        service.addListener((rates) => {
-            this.setState({
-                rates
-            });            
-        })
-        service.start();
+        rates.start((rate) => {
+            service.sendRate(rate);
+            console.log(`Sending rate ${rate}...`)
+            this.setState({ rates: service.getRates() });
+        });
     }
 
     componentWillUnmount() {
-        service.stop();
+        rates.stop();
     }
 
     render() {
@@ -52,14 +52,14 @@ export default class App extends Component {
             colors: [
                 '#61dafb'
             ],
-            xAxis:  {
+            xAxis: {
                 type: 'datetime'
             },
             yAxis: {
                 title: {
                     text: 'Exchange Rate'
                 }
-            },            
+            },
             series: [{
                 data: this.state.rates.map(row => [row.time, row.rate]),
                 type: 'area',
@@ -86,7 +86,7 @@ export default class App extends Component {
                     outerRadius: '100%',
                     shape: 'arc'
                 }
-            },            
+            },
             yAxis: {
                 stops: [
                     [10.0, '#55BF3B'], // green
@@ -101,7 +101,7 @@ export default class App extends Component {
                     y: 20
                 },
                 min: 0,
-                max: 100               
+                max: 100
             },
             plotOptions: {
                 solidgauge: {
@@ -111,17 +111,17 @@ export default class App extends Component {
                         useHTML: true
                     }
                 }
-            },                  
+            },
             series: [{
                 name: 'Volatility',
                 data: [volatility],
                 tooltip: {
                     valueSuffix: ' %'
                 }
-            }]            
+            }]
         }
-        
-        function rateFormatter(cell, row){
+
+        function rateFormatter(cell, row) {
             return cell.toFixed(5);
         }
 
@@ -146,13 +146,13 @@ export default class App extends Component {
                                 <TableHeaderColumn dataField="time" isKey={true} dataAlign="left" dataSort={true}>Time</TableHeaderColumn>
                                 <TableHeaderColumn dataField="instrument" dataSort={true}>Instrument</TableHeaderColumn>
                                 <TableHeaderColumn dataField="rate" dataFormat={rateFormatter}>Rate</TableHeaderColumn>
-                            </BootstrapTable>                    
+                            </BootstrapTable>
                         </Tab>
-                    </Tabs>           
+                    </Tabs>
                     <div>
                         <Volatility name={volatility} balance={service.getBalance()} />
-                    </div> 
-                </div>               
+                    </div>
+                </div>
             </div>
         );
     }
