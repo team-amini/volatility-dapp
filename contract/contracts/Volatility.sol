@@ -51,6 +51,10 @@ contract Volatility {
     function calcVolatility (string instrument) returns (uint) {
         // TODO bounds checking
         uint maxchange = 0;
+        if (lastItemIndex == -1) {
+            return maxchange;
+        }
+
         uint endat = uint(lastItemIndex);
         for (uint i=0;i <= endat; i++) {
             if (i == 0) {

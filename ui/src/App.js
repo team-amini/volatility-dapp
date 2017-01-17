@@ -30,11 +30,11 @@ export default class App extends Component {
     }
 
     componentDidMount() {
-        rates.start((rate) => {
+        rates.start({real: true, onTick: (rate) =>  {
             service.sendRate(rate);
             console.log(`Sending rate ${rate}...`)
             this.setState({ rates: service.getRates() });
-        });
+        }});
     }
 
     componentWillUnmount() {

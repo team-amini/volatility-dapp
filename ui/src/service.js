@@ -1,10 +1,10 @@
 import client from './client'
 import contract from './contract'
 
-var precision = client.toDecimal(contract.precision());
-var scalingFactor = client.toDecimal(contract.scalingfactor());
-
+const precision = client.toDecimal(contract.precision());
+const scalingFactor = client.toDecimal(contract.scalingfactor());
 const instrument = 'eurusd'
+
 var now = Date.now();
 
 function sendRate(rate) {
@@ -12,10 +12,9 @@ function sendRate(rate) {
 }
 
 function getRates() {
-    let rates = contract.getRates.call(instrument);
+    const rates = contract.getRates.call(instrument);
 
-    console.log(rates)
-    return rates.filter(rate => rate != 0.0).map((rate) => ({
+    return rates.filter(rate => rate != 0).map((rate) => ({
         time: (now += 1),
         instrument: 'EUR/USD',
         rate: formatRate(rate)
@@ -27,12 +26,7 @@ function formatRate(rate) {
 }
 
 function getVolatility() {
-    try {
-        return client.toDecimal(contract.calcVolatility.call(instrument, { gas: 1000000000 })) / scalingFactor;
-    } catch (e) {
-        console.log(e);
-        return 0.0;
-    }
+    return client.toDecimal(contract.calcVolatility.call(instrument, { gas: 1000000000 })) / scalingFactor;
 }
 
 function getBalance() {

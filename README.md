@@ -38,7 +38,7 @@ npm install -g ethereumjs-testrpc
 
 Start testrpc and set low gasPrice:
 ```shell
-testrpc -g 1 -m volatility --account='0xafb293409a8c87be6ca3ca2ff1fca89af95e5dcf0bcb15125786b43a080de122,0xe853c56864a2ebe4576a807d26fdc4a0ada51919'
+testrpc --gasLimit 1111115141592 -g 1  -m volatility --account='0xafb293409a8c87be6ca3ca2ff1fca89af95e5dcf0bcb15125786b43a080de122,0x1000000000000000'
 ```
 
 Deploy contract:
