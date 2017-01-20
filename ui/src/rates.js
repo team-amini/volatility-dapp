@@ -1,9 +1,9 @@
 var timer;
-var onTick;
+var _onTick;
 var lastRate = 10553;
 
-function start({onTick_ = () => {}, real = false, period = 10000}) {
-    onTick = onTick_;
+function start({onTick = () => {}, real = false, period = 10000}) {
+    _onTick = onTick;
     timer = setInterval(real ? realTick : fakeTick, period);
 }
 
@@ -13,7 +13,7 @@ function stop() {
 
 function fakeTick() {
     lastRate = generateRate();
-    onTick(lastRate)
+    _onTick(lastRate)
 }
 
 function realTick() {
@@ -22,7 +22,7 @@ function realTick() {
         .then((response) => response.json())
         .then((json) => {
             lastRate = Math.trunc(Number.parseFloat(json.query.results.rate.Rate) * 10000);
-            onTick(lastRate);
+            _onTick(lastRate);
         });
 }
 
