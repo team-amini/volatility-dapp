@@ -56,6 +56,10 @@ export default class App extends Component {
                 type: 'datetime'
             },
             yAxis: {
+                floor: 0.5,
+                ceiling: 1.5,
+                minorTickInterval: 0.05,
+                minorTickLength: 0,
                 title: {
                     text: 'Exchange Rate'
                 }
