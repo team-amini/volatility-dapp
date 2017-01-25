@@ -30,7 +30,7 @@ export default class App extends Component {
     }
 
     componentDidMount() {
-        rates.start({real: true, onTick: (rate) =>  {
+        rates.start({real: false, onTick: (rate) =>  {
             service.sendRate(rate);
             console.log(`Sending rate ${rate}...`)
             this.setState({ rates: service.getRates() });
@@ -89,9 +89,9 @@ export default class App extends Component {
             },
             yAxis: {
                 stops: [
-                    [10.0, '#55BF3B'], // green
-                    [20.0, '#DDDF0D'], // yellow
-                    [30.0, '#DF5353'] // red
+                    [0.0, '#55BF3B'], // green
+                    [0.25, '#DDDF0D'], // yellow
+                    [0.5, '#DF5353'] // red
                 ],
                 lineWidth: 0,
                 minorTickInterval: null,
@@ -101,7 +101,7 @@ export default class App extends Component {
                     y: 20
                 },
                 min: 0,
-                max: 100
+                max: 20
             },
             plotOptions: {
                 solidgauge: {
