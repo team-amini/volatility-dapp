@@ -30,7 +30,7 @@ export default class App extends Component {
     }
 
     componentDidMount() {
-        rates.start({real: false, onTick: (rate) =>  {
+        rates.start({real: true, onTick: (rate) =>  {
             service.sendRate(rate);
             console.log(`Sending rate ${rate}...`)
             this.setState({ rates: service.getRates() });
@@ -56,9 +56,9 @@ export default class App extends Component {
                 type: 'datetime'
             },
             yAxis: {
-                floor: 0.5,
-                ceiling: 1.5,
-                minorTickInterval: 0.05,
+                floor: 0.8,
+                ceiling: 1.2,
+                minorTickInterval: 0.1,
                 minorTickLength: 0,
                 title: {
                     text: 'Exchange Rate'
@@ -66,7 +66,8 @@ export default class App extends Component {
             },
             series: [{
                 data: this.state.rates.map(row => [row.time, row.rate]),
-                type: 'area',
+                type: 'line',
+                step: 'right',
                 name: 'EUR/USD'
             }],
             credits: {
@@ -105,7 +106,7 @@ export default class App extends Component {
                     y: 20
                 },
                 min: 0,
-                max: 20
+                max: 2
             },
             plotOptions: {
                 solidgauge: {
