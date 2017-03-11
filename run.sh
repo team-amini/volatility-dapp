@@ -21,5 +21,5 @@ EOF
 
 SCRIPT=`realpath $0`
 SCRIPTPATH=`dirname $SCRIPT`
-docker run -it -v $SCRIPTPATH:/app -p 3000:3000 unpatent/docker-truffle /bin/bash -c "$script"
+docker run -it -v $SCRIPTPATH:/app -p 3000:3000 -p 8545:8545 unpatent/docker-truffle /bin/bash -c "$script"
 
