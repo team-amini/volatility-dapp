@@ -21,9 +21,9 @@ contract Volatility {
         return array;
     }
 
-    /**
+    /*
      * Pushes rate onto a fixed-length array. FIFO for overflow.
-    **/
+     */
     function sendRate(string instrument, uint rate) {
         // TODO should include a check for valid instrument
         //rates[instrument].push(rate);
@@ -35,19 +35,19 @@ contract Volatility {
     }
 
     
-    /**
+    /*
     Input: instrument for rates are stored
     Return: A fixed length array of rates. Note that it is currently
     not possible in ethereum to return dynamic arrays.
-    **/
+    */
     function getRates(string instrument) returns (uint[30]) {
         return rates[instrument];
     }
     
-    /**
+    /*
     Inefficient in that it loops through the entire array to compute max volatility.
     could be made better by just computing volatility on last 2 items.
-    **/
+    */
     function calcVolatility (string instrument) returns (uint) {
         // TODO bounds checking
         uint maxchange = 0;

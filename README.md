@@ -7,6 +7,12 @@ The project is made of 2 modules:
 - [`ui`](ui) - the DApp
 - [`contract`](contract) - the Ethereum contract
 
+You can skip the following steps if you prefer to run with Docker. To do so, simply run:
+
+```shell
+./run.sh
+```
+
 # Setup
 
 ## Node
