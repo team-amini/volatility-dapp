@@ -4,6 +4,9 @@ import HighchartsMore from 'highcharts/highcharts-more'
 import HighchartsSolidGauge from 'highcharts/modules/solid-gauge'
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table'
 import { Col, Tabs, Tab } from 'react-bootstrap';
+import Chart from './Chart';
+import Gauge from './Gauge';
+
 
 import service from './service'
 import rates from './rates'
@@ -16,115 +19,38 @@ HighchartsSolidGauge(ReactHighcharts.Highcharts)
 
 export default class App extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            rates: []
-        }
-    }
+    // constructor(props) {
+    //     // super(props);
+    //     // this.state = {
+    //     //     rates: []
+    //     // }
+    // }
 
     componentWillMount() {
-        this.setState({
-            rates: service.getRates()
-        });
+        // this.setState({
+        //     rates: service.getRates()
+        // });
     }
 
     componentDidMount() {
-        rates.start({real: true, onTick: (rate) =>  {
-            service.sendRate(rate);
-            console.log(`Sending rate ${rate}...`)
-            this.setState({ rates: service.getRates() });
-        }});
+        // rates.start({real: true, onTick: (rate) =>  {
+        //     service.sendRate(rate);
+        //     console.log(`Sending rate ${rate}...`)
+        //     this.setState({ rates: service.getRates() });
+        // }});
     }
 
     componentWillUnmount() {
-        rates.stop();
+        // rates.stop();
     }
 
     render() {
-        var volatility = service.getVolatility();
-        console.log(volatility);
 
-        var config = {
-            title: {
-                text: null
-            },
-            colors: [
-                '#61dafb'
-            ],
-            xAxis: {
-                type: 'datetime'
-            },
-            yAxis: {
-                floor: 0.8,
-                ceiling: 1.2,
-                minorTickInterval: 0.1,
-                minorTickLength: 0,
-                title: {
-                    text: 'Exchange Rate'
-                }
-            },
-            series: [{
-                data: this.state.rates.map(row => [row.time, row.rate]),
-                type: 'line',
-                step: 'right',
-                name: 'EUR/USD'
-            }],
-            credits: {
-                enabled: false
-            }
-        };
+        //TODO a hack. Need to lift state up so App component has rates from different charts
+        var rates1 = service.getRates("EURUSD");
+        var rates2 = service.getRates("USDCAD");
+        var rates = rates1.concat(rates2);
 
-        var gauge = {
-            chart: {
-                type: 'solidgauge',
-                width: 300
-            },
-            title: null,
-
-            pane: {
-                startAngle: -90,
-                endAngle: 90,
-                background: {
-                    backgroundColor: '#EEE',
-                    innerRadius: '60%',
-                    outerRadius: '100%',
-                    shape: 'arc'
-                }
-            },
-            yAxis: {
-                stops: [
-                    [0.0, '#55BF3B'], // green
-                    [0.25, '#DDDF0D'], // yellow
-                    [0.5, '#DF5353'] // red
-                ],
-                lineWidth: 0,
-                minorTickInterval: null,
-                tickAmount: 2,
-                title: {
-                    text: 'Volatility',
-                    y: 20
-                },
-                min: 0,
-                max: 2
-            },
-            plotOptions: {
-                solidgauge: {
-                    dataLabels: {
-                        y: 5,
-                        borderWidth: 0,
-                        useHTML: true
-                    }
-                }
-            },
-            series: [{
-                name: 'Volatility',
-                data: [volatility],
-                tooltip: {
-                    valueSuffix: ' %'
-                }
-            }]
-        }
 
         function rateFormatter(cell, row) {
             return cell.toFixed(5);
@@ -139,24 +65,29 @@ export default class App extends Component {
                 <div className="App-body">
                     <Tabs defaultActiveKey={1} id="uncontrolled-tab-example">
                         <Tab eventKey={1} title="Chart">
-                            <Col xs={12} md={8}>
-                                <ReactHighcharts config={config}></ReactHighcharts>
+                            <Col xs={6} md={4}>
+                                <Chart instrument="USDCAD" ref="usdcad"></Chart>
+                                
+                            </Col>
+                            <Col xs={6} md={2}> 
+                                <Gauge instrument="USDCAD"></Gauge>
                             </Col>
                             <Col xs={6} md={4}>
-                                <ReactHighcharts config={gauge}></ReactHighcharts>
+                                <Chart instrument="EURUSD" ref="eurusd"></Chart>
                             </Col>
+                            <Col xs={6} md={2}> 
+                               <Gauge instrument="EURUSD"></Gauge>
+                            </Col>
+                            
                         </Tab>
                         <Tab eventKey={2} title="Table">
-                            <BootstrapTable data={this.state.rates} striped={true} hover={true} pagination search>
+                            <BootstrapTable data={rates} striped={true} hover={true} pagination search>
                                 <TableHeaderColumn dataField="time" isKey={true} dataAlign="left" dataSort={true}>Time</TableHeaderColumn>
                                 <TableHeaderColumn dataField="instrument" dataSort={true}>Instrument</TableHeaderColumn>
                                 <TableHeaderColumn dataField="rate" dataFormat={rateFormatter}>Rate</TableHeaderColumn>
                             </BootstrapTable>
                         </Tab>
-                    </Tabs>
-                    <div>
-                        <Volatility name={volatility} balance={service.getBalance()} />
-                    </div>
+                    </Tabs>   
                 </div>
             </div>
         );
